@@ -1,0 +1,31 @@
+{
+  "name": "sssc.boutique-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "remix": "npx remixd -s . --remix-ide https://remix.ethereum.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/battleent/sssc.boutique-contract.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/battleent/sssc.boutique-contract/issues"
+  },
+  "homepage": "https://github.com/battleent/sssc.boutique-contract#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
+    "@truffle/hdwallet-provider": "^2.0.6",
+    "nft.storage": "^6.2.0",
+    "truffle-privatekey-provider": "^1.5.0"
+  },
+  "devDependencies": {
+    "@remix-project/remixd": "^0.5.7",
+    "dotenv-cli": "^5.1.0",
+    "truffle": "^5.5.10"
+  }
+}
