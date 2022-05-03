@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "../ownable/Ownable.sol";
 
-contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
+contract MintSSSC is ERC721Enumerable, Pausable, Ownable {
   string private _baseTokenURI;
   string private _notRevealedURI;
   bool private _revealed;
@@ -47,6 +47,10 @@ contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
     _revealed = state;
   }
 
+  function getReveled() external view returns (bool) {
+    return _revealed;
+  }
+
   function tokenURI(uint256 tokenId)
     public
     view
@@ -63,9 +67,7 @@ contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
       : string.concat(_baseTokenURI, Strings.toString(tokenId), ".json");
   }
 
-  function mint(address to, uint256 tokenId) external {
-    require(isOwner(msg.sender) || isOwner(to), "The caller is not auth");
-
+  function mint(address to, uint256 tokenId) external onlyOwner {
     _safeMint(to, tokenId);
   }
 
@@ -84,19 +86,8 @@ contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
   function _beforeTokenTransfer(address from, address to, uint256 tokenId)
     internal
     whenNotPaused
-    override(ERC721, ERC721Enumerable)
+    override(ERC721Enumerable)
   {
     super._beforeTokenTransfer(from, to, tokenId);   
   }
-
-  function supportsInterface(bytes4 interfaceId)
-      public
-      view
-      override(ERC721, ERC721Enumerable)
-      returns (bool)
-  {
-      return super.supportsInterface(interfaceId);
-  }
-  
-
 }
