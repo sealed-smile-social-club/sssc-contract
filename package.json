@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "remix": "npx remixd -s . --remix-ide https://remix.ethereum.org",
     "flatten": "npx truffle-flattener ./contracts/MintSsscToken.sol",
-    "whitelist-mp": "node ./utils/merkle-tree.js"
+    "whitelist-mp": "node ./utils/merkle-tree.js",
+    "deploy-ropsten": "npx dotenv -e .env.ropsten -- npx truffle migrate --reset --network ropsten --to 2"
   },
   "repository": {
     "type": "git",
@@ -23,8 +24,7 @@
     "@openzeppelin/contracts": "^4.5.0",
     "@truffle/hdwallet-provider": "^2.0.6",
     "keccak256": "^1.0.6",
-    "merkletreejs": "^0.2.31",
-    "truffle-privatekey-provider": "^1.5.0"
+    "merkletreejs": "^0.2.31"
   },
   "devDependencies": {
     "@remix-project/remixd": "^0.5.7",

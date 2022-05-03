@@ -10,14 +10,17 @@ import "../ownable/Ownable.sol";
 contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
   string private _baseTokenURI;
   string private _notRevealedURI;
-  bool private _revealed = false;
+  bool private _revealed;
 
   constructor(
     string memory name,
     string memory symbol,
-    string memory baseTokenURI
+    string memory baseTokenURI,
+    string memory notRevealedURI
   ) ERC721(name, symbol) {
     _baseTokenURI = baseTokenURI;
+    _notRevealedURI = notRevealedURI;
+    _revealed = false;
   }
 
   function setBaseURI(string memory baseTokenURI) external onlyOwner {
@@ -32,14 +35,14 @@ contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
     return _baseTokenURI;
   }
 
-    function getNotRevealedURI() external view returns (string memory) {
-    return _notRevealedURI;
-  }
-  
   function setNotRevealedURI(string memory newNotRevealedURI) external onlyOwner {
     _notRevealedURI = newNotRevealedURI;
   }
 
+  function getNotRevealedURI() external view returns (string memory) {
+    return _notRevealedURI;
+  }
+  
   function setRevealed(bool state) external onlyOwner {
     _revealed = state;
   }
@@ -56,7 +59,7 @@ contract MintSSSC is ERC721, ERC721Enumerable, Pausable, Ownable {
     );
 
     return (_revealed == false)
-      ? string.concat(_notRevealedURI, "not-revealed.json")
+      ? string.concat(_notRevealedURI, "unrevealed.json")
       : string.concat(_baseTokenURI, Strings.toString(tokenId), ".json");
   }
 
