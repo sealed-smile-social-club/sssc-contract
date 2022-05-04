@@ -17,10 +17,26 @@ contract SaleSSSC is Ownable {
   uint256 private _mintStartBlockNumber;        // In blockchain, blocknumber is the standard of time.
   uint256 private _maxSaleAmount;               // Maximum purchase volume of normal sale.
   uint256 private _mintPrice;                   // 1ETH = 1000000000000000000
+  bytes16 private _saleType;
 
   bool private _publicMintEnabled = false;
   bool private _whitelistMintEnabled = false;
 
+  event SaleSetup(
+    address indexed owner,
+    uint256 antibotInterval, 
+    uint256 mintLimitPerBlock,
+    uint256 mintLimitPerSale,
+    uint256 mintStartBlockNumber,
+    uint256 mintIndexForSale,
+    uint256 maxSaleAmount,
+    uint256 mintPrice,
+    bytes16 saleType
+  );
+  event SaleStarted(address indexed owner, bool flag, bytes16 saleType);
+  event Minted(address indexed owner, uint256 tokenId);
+  event Withdrawn(address indexed owner, uint256 balance);
+  
   bytes32 private _merkleRoot;
   
   MintSSSC private _mintSSSC;
@@ -32,21 +48,35 @@ contract SaleSSSC is Ownable {
   }
 
   function setupSale(
-    uint256 newAntibotInterval, 
-    uint256 newMintLimitPerBlock,
-    uint256 newMintLimitPerSale,
-    uint256 newMintStartBlockNumber,
-    uint256 newMintIndexForSale,
-    uint256 newMaxSaleAmount,
-    uint256 newMintPrice
+    uint256 antibotInterval, 
+    uint256 mintLimitPerBlock,
+    uint256 mintLimitPerSale,
+    uint256 mintStartBlockNumber,
+    uint256 mintIndexForSale,
+    uint256 maxSaleAmount,
+    uint256 mintPrice,
+    bytes16 saleType
   ) external onlyOwner{
-    _antibotInterval = newAntibotInterval;
-    _mintLimitPerBlock = newMintLimitPerBlock;
-    _mintLimitPerSale = newMintLimitPerSale;
-    _mintStartBlockNumber = newMintStartBlockNumber;
-    _mintCount = newMintIndexForSale;
-    _maxSaleAmount = newMaxSaleAmount;
-    _mintPrice = newMintPrice;
+    _antibotInterval = antibotInterval;
+    _mintLimitPerBlock = mintLimitPerBlock;
+    _mintLimitPerSale = mintLimitPerSale;
+    _mintStartBlockNumber = mintStartBlockNumber;
+    _mintCount = mintIndexForSale;
+    _maxSaleAmount = maxSaleAmount;
+    _mintPrice = mintPrice;
+    _saleType = saleType;
+
+    emit SaleSetup(
+      msg.sender, 
+      antibotInterval, 
+      mintLimitPerBlock, 
+      mintLimitPerSale, 
+      mintStartBlockNumber, 
+      mintIndexForSale, 
+      maxSaleAmount, 
+      mintPrice, 
+      saleType
+    );
   }
 
   function mintingInformation() external view returns (uint256[7] memory){
@@ -57,8 +87,10 @@ contract SaleSSSC is Ownable {
   }
 
   function setPublicMintEnabled(bool state) external onlyOwner {
-    // require(_mintPrice == 0, "");
+    // require(_mintPrice == 100, "");
     _publicMintEnabled = state;
+
+    emit SaleStarted(msg.sender, state, "public");
   }
 
   function getPublicMintEnabled() external view returns (bool) {
@@ -66,8 +98,10 @@ contract SaleSSSC is Ownable {
   }
 
   function setWhitelistMintEnabled(bool state) external onlyOwner {
-    // require(_mintPrice == 0, "");
+    // require(_mintPrice == 100, "");
     _whitelistMintEnabled = state;
+
+    emit SaleStarted(msg.sender, state, "whitelist");
   }
 
   function getWhitelitMintEnabled() external view returns (bool) {
@@ -89,8 +123,10 @@ contract SaleSSSC is Ownable {
     
     for(uint256 i = 0; i < requestedCount; i++) {
       _mintSSSC.mint(msg.sender, _mintCount);
+      emit Minted(msg.sender, _mintCount);
       _mintCount += 1;
     }
+    
     _lastCallBlockNumber[msg.sender] = block.number;
   }
 
@@ -106,6 +142,7 @@ contract SaleSSSC is Ownable {
 
     for(uint256 i = 0; i < requestedCount; i++) {
       _mintSSSC.mint(msg.sender, _mintCount);
+      emit Minted(msg.sender, _mintCount);
       _mintCount += 1;
     }
 
@@ -116,11 +153,14 @@ contract SaleSSSC is Ownable {
     require(requestedCount > 0, "zero request");
     for(uint256 i = 0; i < requestedCount; i++) {
       _mintSSSC.mint(user, _mintCount);
+      emit Minted(msg.sender, _mintCount);
       _mintCount += 1;
     }
   }
 
   function withdraw() external onlyOwner {
     payable(msg.sender).transfer(address(this).balance);
+
+    emit Withdrawn(msg.sender, address(this).balance);
   }
 }
