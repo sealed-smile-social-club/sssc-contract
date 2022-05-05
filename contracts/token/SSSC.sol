@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "../ownable/Ownable.sol";
 
-contract MintSSSC is ERC721Enumerable, Pausable, Ownable {
+contract SSSC is ERC721Enumerable, Pausable, Ownable {
   string private _baseTokenURI;
   string private _notRevealedURI;
   bool private _revealed;
@@ -50,6 +50,10 @@ contract MintSSSC is ERC721Enumerable, Pausable, Ownable {
   function getReveled() external view returns (bool) {
     return _revealed;
   }
+
+  // function getTotalSupply() external view returns (uint256) {
+  //   return totalSupply();
+  // }
 
   function tokenURI(uint256 tokenId)
     public

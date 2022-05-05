@@ -1,5 +1,7 @@
-const MintSSSC = artifacts.require("MintSSSC");
-const SaleSSSC = artifacts.require("SaleSSSC");
+const SSSC = artifacts.require("MintSSSC");
+const PublicSaleSSSC = artifacts.require("PublicSaleSSSC");
+const WhitelistSaleSSSC = artifacts.require("WhitelitSaleSSSC");
+const AirdropSSSC = artifacts.require("AirdropSSSC");
 
 module.exports = function (deployer) {
   deployer
@@ -10,8 +12,12 @@ module.exports = function (deployer) {
       "https://sssc.boutique/metadata/",
       "https://sssc.boutique/metadata/"
     )
-    .then(() => MintSSSC.deployed())
-    .then(() => deployer.deploy(SaleSSSC, MintSSSC.address))
-    .then(() => SaleSSSC.deployed())
+    .then(() => SSSC.deployed())
+    .then(() => deployer.deploy(WhitelistSaleSSSC, SSSC.address))
+    .then(() => WhitelistSaleSSSC.deployed())
+    .then(() => deployer.deploy(PublicSaleSSSC, SSSC.address))
+    .then(() => PublicSaleSSSC.deployed())
+    .then(() => deployer.deploy(AirdropSSSC, SSSC.address))
+    .then(() => AirdropSSSC.deployed())
     .catch(e => Promise.reject(new Error('Mint deployer failed. Error:', e)))
 };
