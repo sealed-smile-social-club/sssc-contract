@@ -1,12 +1,12 @@
-const SSSC = artifacts.require("MintSSSC");
+const SSSC = artifacts.require("SSSC");
 const PublicSaleSSSC = artifacts.require("PublicSaleSSSC");
-const WhitelistSaleSSSC = artifacts.require("WhitelitSaleSSSC");
+const WhitelistSaleSSSC = artifacts.require("WhitelistSaleSSSC");
 const AirdropSSSC = artifacts.require("AirdropSSSC");
 
 module.exports = function (deployer) {
   deployer
     .deploy(
-      MintSSSC,
+      SSSC,
       "Sealed Smile Social Club",
       "SSSC",
       "https://sssc.boutique/metadata/",
