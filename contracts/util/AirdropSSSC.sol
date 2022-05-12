@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.13;
 
-import "./ISSSC.sol";
+import "../token/ISSSC.sol";
 import "../ownable/Ownable.sol";
 
 contract AirdropSSSC is Ownable {  
