@@ -1,6 +1,6 @@
 // 1. Import libraries. Use `npm` package manager to install
-const { MerkleTree } = require('merkletreejs');
-const keccak256 = require('keccak256');
+import { MerkleTree } from 'merkletreejs';
+import keccak256 from 'keccak256';
 
 // 2. Collect list of wallet addresses from competition, raffle, etc.
 // Store list of addresses in some data sheeet (Google Sheets or Excel)

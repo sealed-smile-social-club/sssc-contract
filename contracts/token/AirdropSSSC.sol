@@ -25,12 +25,12 @@ contract AirdropSSSC is Ownable {
     return _mintCount;
   }
 
-  function airDropMint(address user, uint256 requestedCount) external onlyOwner {
+  function airdropMint(address target, uint256 requestedCount) external onlyOwner {
     require(_mintCount > 0, "Setup MintCount");
     require(requestedCount > 0, "zero request");
     
     for(uint256 i = 0; i < requestedCount; i++) {
-      _sssc.mint(user, _mintCount);
+      _sssc.mint(target, _mintCount);
       emit AirdropMinted(msg.sender, _mintCount);
       _mintCount += 1;
     }
