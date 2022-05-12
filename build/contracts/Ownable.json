@@ -139,7 +139,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "//SPDX-License-Identifier: UNLICENSED\n\npragma solidity ^0.8.13;\n\nimport \"@openzeppelin/contracts/utils/Context.sol\";\n\nabstract contract Ownable is Context {\n  mapping(address => bool) public owners;\n\n  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\n  event OwnershipRevoked(address indexed revokedOwner);\n  event OwnershipExtended(address indexed host, address indexed guest);\n\n  modifier onlyOwner() {\n    require(isOwner(_msgSender()), \"Ownable: caller is not the owner\");\n    _;\n  }\n\n  constructor() {\n    owners[msg.sender] = true;\n  }\n\n  function isOwner(address owner) public view virtual returns (bool) {\n    return owners[owner];\n  }\n\n  function addOwner(address guest) public onlyOwner {\n    require(guest != address(0));\n    owners[guest] = true;\n    emit OwnershipExtended(_msgSender(), guest);\n  }\n\n  function removeOwner(address owner) public onlyOwner {\n    require(owner != address(0));\n    require(_msgSender() != owner);\n    owners[owner] = false;\n    emit OwnershipRevoked(owner);\n  }\n\n  function transferOwnership(address newOwner) public onlyOwner {\n    require(newOwner != address(0));\n    owners[newOwner] = true;\n    delete owners[_msgSender()];\n    emit OwnershipTransferred(_msgSender(), newOwner);\n  }\n}",
-  "sourcePath": "/Users/harace/dev/sssc-contract/contracts/ownable/Ownable.sol",
+  "sourcePath": "/Users/haeminmoon/Documents/sssc-contract/contracts/ownable/Ownable.sol",
   "ast": {
     "absolutePath": "project:/contracts/ownable/Ownable.sol",
     "exportedSymbols": {
@@ -2125,7 +2125,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-05T09:44:31.535Z",
+  "updatedAt": "2022-05-11T07:09:14.001Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
