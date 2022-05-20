@@ -9,8 +9,8 @@ module.exports = function (deployer) {
       SSSC,
       "Sealed Smile Social Club",
       "SSSC",
-      "https://sssc.boutique/metadata/",
-      "https://sssc.boutique/metadata/"
+      "https://resource.sssc.boutique/metadata/",
+      "https://resource.sssc.boutique/not-revealed/"
     )
     .then(() => SSSC.deployed())
     .then(() => deployer.deploy(WhitelistSaleSSSC, SSSC.address))

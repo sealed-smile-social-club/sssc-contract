@@ -51,10 +51,6 @@ contract SSSC is ERC721Enumerable, Pausable, Ownable {
     return _revealed;
   }
 
-  // function getTotalSupply() external view returns (uint256) {
-  //   return totalSupply();
-  // }
-
   function tokenURI(uint256 tokenId)
     public
     view
@@ -67,7 +63,7 @@ contract SSSC is ERC721Enumerable, Pausable, Ownable {
     );
 
     return (_revealed == false)
-      ? string.concat(_notRevealedURI, "unrevealed.json")
+      ? string.concat(_notRevealedURI, "metadata.json")
       : string.concat(_baseTokenURI, Strings.toString(tokenId), ".json");
   }
 
