@@ -34,15 +34,15 @@
     "absolutePath": "project:/contracts/token/ISSSC.sol",
     "exportedSymbols": {
       "ISSSC": [
-        2482
+        2961
       ]
     },
-    "id": 2483,
+    "id": 2962,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2474,
+        "id": 2953,
         "literals": [
           "solidity",
           "^",
@@ -50,7 +50,7 @@
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "33:24:16"
+        "src": "33:24:22"
       },
       {
         "abstract": false,
@@ -59,36 +59,36 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 2482,
+        "id": 2961,
         "linearizedBaseContracts": [
-          2482
+          2961
         ],
         "name": "ISSSC",
-        "nameLocation": "69:5:16",
+        "nameLocation": "69:5:22",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "functionSelector": "40c10f19",
-            "id": 2481,
+            "id": 2960,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "mint",
-            "nameLocation": "88:4:16",
+            "nameLocation": "88:4:22",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2479,
+              "id": 2958,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2476,
+                  "id": 2955,
                   "mutability": "mutable",
                   "name": "to",
-                  "nameLocation": "101:2:16",
+                  "nameLocation": "101:2:22",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2481,
-                  "src": "93:10:16",
+                  "scope": 2960,
+                  "src": "93:10:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -96,10 +96,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 2475,
+                    "id": 2954,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "93:7:16",
+                    "src": "93:7:22",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -110,13 +110,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 2478,
+                  "id": 2957,
                   "mutability": "mutable",
                   "name": "tokenId",
-                  "nameLocation": "113:7:16",
+                  "nameLocation": "113:7:22",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2481,
-                  "src": "105:15:16",
+                  "scope": 2960,
+                  "src": "105:15:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -124,10 +124,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2477,
+                    "id": 2956,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "105:7:16",
+                    "src": "105:7:22",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -136,27 +136,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "92:29:16"
+              "src": "92:29:22"
             },
             "returnParameters": {
-              "id": 2480,
+              "id": 2959,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "130:0:16"
+              "src": "130:0:22"
             },
-            "scope": 2482,
-            "src": "79:52:16",
+            "scope": 2961,
+            "src": "79:52:22",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 2483,
-        "src": "59:74:16",
+        "scope": 2962,
+        "src": "59:74:22",
         "usedErrors": []
       }
     ],
-    "src": "33:100:16"
+    "src": "33:100:22"
   },
   "compiler": {
     "name": "solc",
@@ -164,7 +164,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-11T07:09:14.013Z",
+  "updatedAt": "2022-06-20T06:09:29.983Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

@@ -38,7 +38,7 @@ contract PublicSaleSSSC is Ownable {
   event PublicMinted(address indexed owner, uint256 tokenId);
   event Withdrawn(address indexed owner, uint256 balance);
 
-  function setupSale(
+  function setupPublicSale(
     uint256 antibotInterval, 
     uint256 mintLimitPerBlock,
     uint256 mintStartBlockNumber,
