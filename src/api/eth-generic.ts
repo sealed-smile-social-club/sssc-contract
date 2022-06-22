@@ -25,7 +25,7 @@ export const writeContract = async (
   }) => {
   const inputs = orderInputs(contract, fnName, params);
 
-  console.log('writeContract#inputs:', inputs);
+  // console.log('writeContract#inputs:', inputs);
 
   const res = await contract[fnName](...inputs, {
     gasPrice: overrides.gasPrice ? utils.parseUnits(overrides.gasPrice.toString(), 'gwei') : undefined,
