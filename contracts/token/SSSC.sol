@@ -47,7 +47,7 @@ contract SSSC is ERC721Enumerable, Pausable, Ownable {
     _revealed = state;
   }
 
-  function getReveled() external view returns (bool) {
+  function getRevealed() external view returns (bool) {
     return _revealed;
   }
 
