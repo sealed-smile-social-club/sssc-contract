@@ -34,212 +34,203 @@ describe('Mint Contract', () => {
     // });
   });
 
-  test('pause가 true 일 때, 토큰 전송이 가능하다.', async () => {
+  test('owner가 아닌 계정으로 addOwner를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'addOwner(address)', { guest: await notOwner.getAddress() }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      })
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 removeOwner를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'removeOwner(address)', { owner: await notOwner.getAddress() }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 setBaseURI 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'setBaseURI(string)', { baseTokenURI: 'https://test-uri.com' }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 setNotRevealedURI를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'setNotRevealedURI(string)', { newNotRevealedURI: 'https://test-uri.com' }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 setRevealed를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'setRevealed(bool)', { state: true }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 mint를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'mint(address, uint256)', { to: '0xa...', tokenId: 1 }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 pause를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'pause()', {}, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 아닌 계정으로 unpause를 실행하면 revert가 된다.', async () => {  
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'unpause()', {}, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
+
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
+
+  test('owner가 민팅을 시도하면, 민팅이 된다.', async () => {
     const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
+  
+    await GenericAPI.writeContract(ssscContract, 'mint(address,uint256)', { to: await owner.getAddress(), tokenId: tokenId }, {
+      gasPrice: 30,
+      gasLimit: 1000000,
+      confirmations: 1
+    });
 
-      // await GenericAPI.writeContract(ssscContract, 'setBaseURI(string)', { baseTokenURI: 'https://resource.sssc.boutique/metadata/' }, {
-      //   gasPrice: 30,
-      //   gasLimit: 1000000,
-      //   confirmations: 1
-      // });
+    const res = await GenericAPI.readContract(ssscContract, 'ownerOf(uint256)', { tokenId: tokenId });
 
-      // const baseURI = await GenericAPI.readContract(ssscContract, 'getBaseURI()', {});
-      // console.log(baseURI)
+    expect(res).toBe(await owner.getAddress());
+  })
 
+  test('revealed가 false 일 때, tokenURI notRevealedURI에 지정한 URI가 노출 된다.', async () => {
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
     await GenericAPI.writeContract(ssscContract, 'setRevealed(bool)', { state: false }, {
       gasPrice: 30,
       gasLimit: 1000000,
       confirmations: 1
     });
-    const isRevealed = await GenericAPI.readContract(ssscContract, 'getRevealed()', {});
-    console.log(isRevealed)
 
-    expect(true);
+    const tokenURI = await GenericAPI.readContract(ssscContract, 'tokenURI(uint256)', { tokenId: tokenId });
+    expect(tokenURI).toBe(`https://resource.sssc.boutique/not-revealed/metadata.json`);
   })
 
-  // test('owner가 아닌 계정으로 addOwner를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'addOwner(address)', { guest: await notOwner.getAddress() }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     })
+  test('revealed가 true 일 때, tokenURI baseToeknURI에 지정한 URI가 노출 된다.', async () => {
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
+    await GenericAPI.writeContract(ssscContract, 'setRevealed(bool)', { state: true }, {
+      gasPrice: 30,
+      gasLimit: 1000000,
+      confirmations: 1
+    });
 
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
+    const tokenURI = await GenericAPI.readContract(ssscContract, 'tokenURI(uint256)', { tokenId: tokenId });
+    expect(tokenURI).toBe(`https://resource.sssc.boutique/metadata/${tokenId}.json`);
+  })
 
-  // test('owner가 아닌 계정으로 removeOwner를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'removeOwner(address)', { owner: await notOwner.getAddress() }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
+  test('paused일 때, 토큰 전송이 불가능하다.', async () => {
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
+    try {
+      await GenericAPI.writeContract(ssscContract, 'pause()', {}, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
 
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
+      await GenericAPI.writeContract(ssscContract, 'transferFrom(address,address,uint256)', { from: await owner.getAddress(), to: await notOwner.getAddress(), tokenId: tokenId }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
 
-  // test('owner가 아닌 계정으로 setBaseURI 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'setBaseURI(string)', { baseTokenURI: 'https://test-uri.com' }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
+      throw Error('The trasaction have passed.')
+    } catch (e: any) {
+      expect(e.message).not.toBe('The trasaction have passed.');
+    }
+  })
 
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
+  test('unpaused일 때, 토큰 전송이 가능하다.', async () => {
+    const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
+      await GenericAPI.writeContract(ssscContract, 'unpause()', {}, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
 
-  // test('owner가 아닌 계정으로 setNotRevealedURI를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'setNotRevealedURI(string)', { newNotRevealedURI: 'https://test-uri.com' }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
+      await GenericAPI.writeContract(ssscContract, 'transferFrom(address,address,uint256)', { from: await owner.getAddress(), to: await notOwner.getAddress(), tokenId: tokenId }, {
+        gasPrice: 30,
+        gasLimit: 1000000,
+        confirmations: 1
+      });
 
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
+      const res = await GenericAPI.readContract(ssscContract, 'ownerOf(uint256)', { tokenId: tokenId });
 
-  // test('owner가 아닌 계정으로 setRevealed를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'setRevealed(bool)', { state: true }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
-
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
-
-  // test('owner가 아닌 계정으로 mint를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'mint(address, uint256)', { to: '0xa...', tokenId: 1 }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
-
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
-
-  // test('owner가 아닌 계정으로 pause를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'pause()', { }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
-
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
-
-  // test('owner가 아닌 계정으로 unpause를 실행하면 revert가 된다.', async () => {  
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, notOwner);
-  //   try {
-  //     await GenericAPI.writeContract(ssscContract, 'unpause()', { }, {
-  //       gasPrice: 30,
-  //       gasLimit: 1000000,
-  //       confirmations: 1
-  //     });
-
-  //     throw Error('The trasaction have passed.')
-  //   } catch (e: any) {
-  //     expect(e.message).not.toBe('The trasaction have passed.');
-  //   }
-  // })
-
-  // test('owner가 민팅을 시도하면, 민팅이 된다.', async () => {
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
-  
-  //   await GenericAPI.writeContract(ssscContract, 'mint(address,uint256)', { to: await notOwner.getAddress(), tokenId: tokenId }, {
-  //     gasPrice: 30,
-  //     gasLimit: 1000000,
-  //     confirmations: 1
-  //   });
-
-  //   const res = await GenericAPI.readContract(ssscContract, 'ownerOf(uint256)', { tokenId: tokenId });
-
-  //   expect(res).toBe(await notOwner.getAddress());
-  // })
-
-  // test('revealed가 false 일 때, tokenURI notRevealedURI에 지정한 URI가 노출 된다.', async () => {
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
-  //   const t = await GenericAPI.writeContract(ssscContract, 'setRevealed(bool)', { state: 'false' }, {
-  //     gasPrice: 30,
-  //     gasLimit: 1000000,
-  //     confirmations: 1
-  //   });
-  //   console.log(t)
-
-  //   const tokenURI = await GenericAPI.readContract(ssscContract, 'tokenURI(uint256)', { tokenId: tokenId });
-  //   console.log(tokenURI)
-
-  //   const isRevealed = await GenericAPI.readContract(ssscContract, 'getRevealed()', {});
-  //   console.log(isRevealed)
-
-  //   expect(tokenURI).toBe(`https://resource.sssc.boutique/not-revealed/metadata.json`);
-  // })
-
-  // test('revealed가 true 일 때, tokenURI baseToeknURI에 지정한 URI가 노출 된다.', async () => {
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
-  //   await GenericAPI.writeContract(ssscContract, 'setRevealed(bool)', { state: true }, {
-  //     gasPrice: 30,
-  //     gasLimit: 1000000,
-  //     confirmations: 1
-  //   });
-
-  //   const tokenURI = await GenericAPI.readContract(ssscContract, 'tokenURI(uint256)', { tokenId: tokenId });
-  //   console.log(tokenURI)
-
-  //   const isRevealed = await GenericAPI.readContract(ssscContract, 'getReveled()', {});
-  //   console.log(isRevealed)
-
-  //   expect(tokenURI).toBe(`https://resource.sssc.boutique/metadata/${tokenId}.json`);
-  // })
-
-  // test('revealed가 true 일 때, baseURI는 baseToeknURI에 지정한 URI가 노출 된다.', async () => {
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
-  //   expect(true);
-  // })
-
-  // test('pause가 false 일 때, 토큰 전송이 불가능하다.', async () => {
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
-  //   expect(true);
-  // })
-
-  // test('pause가 true 일 때, 토큰 전송이 가능하다.', async () => {
-  //   const ssscContract = GenericAPI.getContractByInterface(ssscAddress, ssscAbi, owner);
-  //   expect(true);
-  // })
+      expect(res).toBe(await notOwner.getAddress());
+  })
 })
 
 describe('WhitelistSale Contract', () => {
@@ -360,10 +351,7 @@ describe('Airdrop Contract', () => {
     process.env.PROVIDER_ENDPOINT!
   );
 
-  beforeAll(async () => {
-    // console.log(owner)
-    // console.log('Pre-process')
-  });
+  beforeAll(async () => {});
 
   test('owner가 아닌 계정으로 쓰기 함수를 실행하면 revert가 된다.', () => {
     // withdraw, airdropMint, setMintCount
