@@ -58,9 +58,8 @@ const createQuery = (contract: Contract, queryName: string, params: any) => {
 
 export const orderInputs = (contract: Contract, fnName: string, params: any) => {
   const inputs: any[] = [];
-
   contract.interface.functions[fnName].inputs.forEach(input => {
-    if (params[input.name]) {
+    if (params[input.name] || typeof Boolean) {
       inputs.push(params[input.name]);
     }
   });
