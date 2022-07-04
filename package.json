@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-local": "npx dotenv -e .env.local -- jest",
+    "test-local": "npm run deploy-local && npx dotenv -e .env.local -- jest",
     "test-ropsten": "npx dotenv -e .env.ropsten -- jest",
     "remix": "npx remixd -s . --remix-ide https://remix.ethereum.org",
     "flatten": "npx truffle-flattener ./contracts/MintSsscToken.sol",
