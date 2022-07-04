@@ -10,8 +10,9 @@ contract WhitelistSaleSSSC is Ownable {
   mapping(address => bool) private _whitelistClaimed;
 
   uint256 private _mintCount;                   // If someone burns NFT in the middle of minting, the tokenId will go wrong, so use the index instead of totalSupply().
-  uint256 private _mintLimitPerWhitelistSale;   // Maximum purchase nft per person per sale
-  uint256 private _mintStartBlockNumber;        // In blockchain, blocknumber is the standard of time.
+  uint256 private _mintLimitPerBlock;           // Maximum purchase nft per person per sale
+  uint256 private _mintStartTime;
+  uint256 private _mintEndTime;
   uint256 private _maxSaleAmount;               // Maximum purchase volume of normal sale.
   uint256 private _mintPrice;                   // 1ETH = 1000000000000000000
 
@@ -24,12 +25,12 @@ contract WhitelistSaleSSSC is Ownable {
   constructor (address mintSSSCAddress) {
     _sssc = ISSSC(mintSSSCAddress);
   }
-
   event WhitelistSaleSetup(
     address indexed owner,
-    uint256 mintLimitPerWhitelistSale,
-    uint256 mintStartBlockNumber,
     uint256 mintCount,
+    uint256 mintLimitPerBlock,
+    uint256 mintStartTime,
+    uint256 mintEndTime,
     uint256 maxSaleAmount,
     uint256 mintPrice
   );
@@ -37,33 +38,35 @@ contract WhitelistSaleSSSC is Ownable {
   event WhitelistMinted(address indexed owner, uint256 tokenId);
   event Withdrawn(address indexed owner, uint256 balance);
 
-  function setupWhitelistSale(
-    uint256 mintLimitPerWhitelistSale,
-    uint256 mintStartBlockNumber,
+  function setWhitelistSaleInfo(
     uint256 mintCount,
+    uint256 mintLimitPerBlock,
+    uint256 mintStartTime,
+    uint256 mintEndTime,
     uint256 maxSaleAmount,
     uint256 mintPrice
-  ) external onlyOwner{
-    _mintLimitPerWhitelistSale = mintLimitPerWhitelistSale;
-    _mintStartBlockNumber = mintStartBlockNumber;
+  ) external onlyOwner {
     _mintCount = mintCount;
+    _mintLimitPerBlock = mintLimitPerBlock;
+    _mintStartTime = mintStartTime;
+    _mintEndTime = mintEndTime;
     _maxSaleAmount = maxSaleAmount;
     _mintPrice = mintPrice;
 
     emit WhitelistSaleSetup(
       msg.sender, 
-      mintLimitPerWhitelistSale, 
-      mintStartBlockNumber, 
       mintCount, 
+      mintLimitPerBlock, 
+      mintStartTime, 
+      mintEndTime, 
       maxSaleAmount, 
       mintPrice
     );
   }
 
-  function mintingInformation() external view returns (uint256[5] memory){
-    uint256[5] memory info =
-      [_mintCount, _mintLimitPerWhitelistSale, 
-        _mintStartBlockNumber, _maxSaleAmount, _mintPrice];
+  function getWhitelistSaleInfo() external view returns (uint256[6] memory){
+    uint256[6] memory info =
+      [_mintCount, _mintLimitPerBlock, _mintStartTime, _mintEndTime, _maxSaleAmount, _mintPrice];
     return info;
   }
 
@@ -84,11 +87,19 @@ contract WhitelistSaleSSSC is Ownable {
     return _whitelistClaimed[target];
   }
 
+  function setMerkleRoot(bytes32 merkleRoot) external onlyOwner {
+    _merkleRoot = merkleRoot;
+  }
+
+  function getMerkleRoot() external view returns (bytes32) {
+    return _merkleRoot;
+  }
+
   function whitelistMint(uint256 requestedCount, bytes32[] calldata merkleProof) external payable {
     require(_whitelistMintEnabled, "The whitelist sale is not enabled!");
-    // require(block.number >= _mintStartBlockNumber, "Not yet started");
+    require(block.timestamp >= _mintStartTime && block.timestamp <= _mintEndTime, "This is not the sale period");
     require(!_whitelistClaimed[msg.sender], 'Address already claimed!');
-    require(requestedCount > 0 && requestedCount <= _mintLimitPerWhitelistSale, "Too many requests or zero request");
+    require(requestedCount > 0 && requestedCount <= _mintLimitPerBlock, "Too many requests or zero request");
     require(msg.value == _mintPrice * requestedCount, "Not correct ETH");
     require(_mintCount + requestedCount <= _maxSaleAmount + 1, "Exceed max amount");
     

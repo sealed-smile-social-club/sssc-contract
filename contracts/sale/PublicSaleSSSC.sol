@@ -10,12 +10,13 @@ contract PublicSaleSSSC is Ownable {
   // To prevent bot attack, we record the last contract call block number.
   mapping (address => uint256) private _lastCallBlockNumber; 
 
-  uint256 private _antibotInterval;
   uint256 private _mintCount;                   // If someone burns NFT in the middle of minting, the tokenId will go wrong, so use the index instead of totalSupply().
   uint256 private _mintLimitPerBlock;           // Maximum purchase nft per person per block
-  uint256 private _mintStartBlockNumber;        // In blockchain, blocknumber is the standard of time.
+  uint256 private _mintStartTime;
+  uint256 private _mintEndTime;
   uint256 private _maxSaleAmount;               // Maximum purchase volume of normal sale.
   uint256 private _mintPrice;                   // 1ETH = 1000000000000000000
+  uint256 private _antibotInterval;
 
   bool private _publicMintEnabled = false;
 
@@ -27,47 +28,51 @@ contract PublicSaleSSSC is Ownable {
 
   event PublicSaleSetup(
     address indexed owner,
-    uint256 antibotInterval, 
-    uint256 mintLimitPerBlock,
-    uint256 mintStartBlockNumber,
     uint256 mintCount,
+    uint256 mintLimitPerBlock,
+    uint256 mintStartTime,
+    uint256 mintEndTime,
     uint256 maxSaleAmount,
-    uint256 mintPrice
+    uint256 mintPrice,
+    uint256 antibotInterval
   );
   event PublicSaleStarted(address indexed owner, bool flag, bytes16 saleType);
   event PublicMinted(address indexed owner, uint256 tokenId);
   event Withdrawn(address indexed owner, uint256 balance);
 
-  function setupPublicSale(
-    uint256 antibotInterval, 
-    uint256 mintLimitPerBlock,
-    uint256 mintStartBlockNumber,
+  function setPublicSaleInfo(
     uint256 mintCount,
+    uint256 mintLimitPerBlock,
+    uint256 mintStartTime,
+    uint256 mintEndTime,
     uint256 maxSaleAmount,
-    uint256 mintPrice
-  ) external onlyOwner{
-    _antibotInterval = antibotInterval;
-    _mintLimitPerBlock = mintLimitPerBlock;
-    _mintStartBlockNumber = mintStartBlockNumber;
+    uint256 mintPrice,
+    uint256 antibotInterval
+  ) external onlyOwner {
     _mintCount = mintCount;
+    _mintLimitPerBlock = mintLimitPerBlock;
+    _mintStartTime = mintStartTime;
+    _mintEndTime = mintEndTime;
     _maxSaleAmount = maxSaleAmount;
     _mintPrice = mintPrice;
+    _antibotInterval = antibotInterval;
 
     emit PublicSaleSetup(
       msg.sender, 
-      antibotInterval, 
+      mintCount,
       mintLimitPerBlock, 
-      mintStartBlockNumber, 
-      mintCount, 
+      mintStartTime,
+      mintEndTime,
       maxSaleAmount, 
-      mintPrice
+      mintPrice,
+      antibotInterval
     );
   }
 
-  function mintingInformation() external view returns (uint256[6] memory){
-    uint256[6] memory info =
-      [_antibotInterval, _mintCount, _mintLimitPerBlock,
-        _mintStartBlockNumber, _maxSaleAmount, _mintPrice];
+  function getWhitelistSaleInfo() external view returns (uint256[7] memory){
+    uint256[7] memory info =
+      [_mintCount, _mintLimitPerBlock,
+        _mintStartTime, _mintEndTime, _maxSaleAmount, _mintPrice, _antibotInterval];
     return info;
   }
 
@@ -86,7 +91,7 @@ contract PublicSaleSSSC is Ownable {
 
   function publicMint(uint256 requestedCount) external payable {
     require(_publicMintEnabled, "The public sale is not enabled!");
-    // require(block.number >= _mintStartBlockNumber, "Not yet started");
+    require(block.timestamp >= _mintStartTime && block.timestamp <= _mintEndTime, "This is not the sale period.");
     require(_lastCallBlockNumber[msg.sender] + _antibotInterval < block.number, "Bot is not allowed");
     require(requestedCount > 0 && requestedCount <= _mintLimitPerBlock, "Too many requests or zero request");
     require(msg.value == _mintPrice * requestedCount, "Not correct ETH");
