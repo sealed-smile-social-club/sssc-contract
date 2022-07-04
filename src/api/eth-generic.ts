@@ -19,6 +19,7 @@ export const writeContract = async (
   fnName: string, 
   params: any, 
   overrides: { 
+    value?: number,
     gasPrice: number, 
     gasLimit: number,
     confirmations: number
@@ -28,8 +29,9 @@ export const writeContract = async (
   // console.log('writeContract#inputs:', inputs);
 
   const res = await contract[fnName](...inputs, {
+    value: overrides.value,
     gasPrice: overrides.gasPrice ? utils.parseUnits(overrides.gasPrice.toString(), 'gwei') : undefined,
-    gasLimit: overrides.gasLimit && !isNaN(overrides.gasLimit) ? Number(overrides.gasLimit) : undefined
+    gasLimit: overrides.gasLimit && !isNaN(overrides.gasLimit) ? Number(overrides.gasLimit) : undefined,
   });
 
   // console.log('writeContract#txResponse:', res);
@@ -40,6 +42,7 @@ export const writeContract = async (
 export const readContract = async (contract: Contract, fnName: string, params: any) => {
   const query = createQuery(contract, fnName, params);
   const res = await query.call();
+
   return parseQueryResult(res, query.outputTypes);
 }
 
@@ -67,15 +70,23 @@ export const orderInputs = (contract: Contract, fnName: string, params: any) => 
 }
 
 const parseQueryResult = (result: any, outputTypes: string[]) => {
-  if (outputTypes.length > 1) {
-    return outputTypes.map((type, i) => {
-      return isBigNumber(type) && result[i] instanceof BigNumber
-        ? result[i].toString()
-        : result[i];
-    });
+  // if (outputTypes.length > 1) {
+  //   return outputTypes.map((type, i) => {
+  //     return result[i] instanceof BigNumber
+  //       ? result[i].toString()
+  //       : result[i];
+  //   });
+  // }
+
+  if (result instanceof Array) {
+    return result.map(a => {
+      return a instanceof BigNumber
+        ? a.toString()
+        : a;
+    })
   }
 
-  return isBigNumber(outputTypes[0]) && result instanceof BigNumber
+  return result instanceof BigNumber
     ? result.toString()
     : result;
 }
